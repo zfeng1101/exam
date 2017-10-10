@@ -1,0 +1,132 @@
+<style>
+	.Attributecontent_left select{width:100px}
+	textarea,input{font-size:12px;}
+	.Answerpart_right textarea,.Problemcontent textarea{width:90%;height:70%;border:none;padding:10px;}
+	.chapterAnswer{ display:none}
+</style>
+
+<!--题目添加-->
+<div class="editingarea">
+<form action="" method="post" name="subjectAddForm">
+    <div class="c_flex"><span class="c_flexible"></span></div>
+    <div class="chosetitle"><a href="#" class="deletetitle">删除</a></div>
+    
+	<div class="c_editview">
+    	<div class="Attribute">
+             <div class="Attributetit">题目属性</div>
+             <div class="Attributecontent">
+                 <div class="Attributecontent_left">
+                     <b>
+                     	题型：<select name="type">
+                       	    </select>
+                     </b>
+                     <b>
+                     	方向：<select name="department">
+                     		
+                       	        </select>
+                     </b>
+                     <b>
+                     	难度：<select name="level">
+                     		
+                       	</select>
+                     </b>
+                     <b>
+                     	知识点：<select name="topic">
+                        </select>
+                     </b> 
+                 </div>              
+             </div>
+        </div>
+        <div class="Problem">
+            <div class="Attributetit">题目题干</div>
+            <div>
+                <textarea name="stem" cols="80" rows="4"></textarea>                              
+            </div>
+        </div>
+        <div class="Answeroptions">
+            <div class="Attributetit">答案选项<em>(通过勾选每个选项下面的框可以设置正确答案)</em></div>
+            <div class="c_condition"><span class="icon_add">
+            	<em class="icon_r" style="float: left">添加选项</em></span>
+            </div>
+            <div class="Answercontent">
+            	<!--选项-->
+                <div class="Answerpart">
+                     <div class="Answerpart_left">
+                         <p>A</p><span>
+                         <input type="radio" name="answer"/></span>
+                     </div>
+                     <div class="Answerpart_right">
+                     	<textarea name="choiceContent"></textarea>   
+                     </div>
+                     <div class="clear"></div>
+                </div>
+                <div class="Answerpart">
+                    <div class="Answerpart_left">
+                        <p>B</p><span>
+                        <input type="radio" name="answer"/>
+                        </span>
+                    </div>
+                    <div class="Answerpart_right">
+                    	<textarea name="choiceContent"></textarea>  
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="Answerpart">
+                    <div class="Answerpart_left">
+                        <p>C</p><span>
+                        <input type="radio" name="answer"/>
+                        </span>
+                    </div>
+                    <div class="Answerpart_right">
+                    	<textarea name="choiceContent"></textarea>  
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="Answerpart">
+                    <div class="Answerpart_left">
+                        <p>D</p><span>
+                        <input type="radio" name="answer"/>
+                        </span>
+                    </div>
+                    <div class="Answerpart_right">
+                    	<textarea name="choiceContent"></textarea>  
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+        <div class="Problem chapterAnswer">
+            <div class="Attributetit">答案</div>
+            <div class="Problemcontent">
+            	<textarea name="answer"></textarea> 
+            </div>
+        </div>
+        
+        <div class="Problem">
+            <div class="Attributetit">答案解析</div>
+            <div class="Problemcontent">
+            	<textarea name="analysis"></textarea> 
+            </div>
+        </div>
+        <!--
+        <div class="Problem">
+            <div class="fistproblm"><span>1.</span><a href="#"></a></div>
+            <div class="Problemcontent"></div>
+        </div>
+        -->
+        <div class="btn_left">
+            <span class="btnL"><em class="btnR saveContinue">保存并继续</em></span>
+            <span class="btnL"><em class="btnR saveClose">保存并关闭</em></span>
+        </div>
+    </div>
+</form>
+</div>
+
+<script>
+    $(function(){
+        var opt = $("<option>"+请选择+"</option>");
+        $(".Attributecontent_left.eq(0):select").append(opt);
+    });
+    
+</script>

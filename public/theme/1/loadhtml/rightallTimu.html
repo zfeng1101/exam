@@ -1,0 +1,215 @@
+         	
+                
+                
+                
+                <div class="editingarea">
+                    <div class="c_flex"><span class="c_flexible"></span></div>
+                	<div class="c_editview">
+                   <div class="c_condition">
+                       <span><select><option>题干</option></select></span>
+                       <span class="pl5 " ><input type="text"></span>
+                       <span class="pl15 pr15 btn_gray ">查找</span>
+                       <span class="icon_lead-in"><em class="icon_r">批量导入题目</em></span>
+                       <span class="icon_add"><em class="icon_r">单个添加题目</em></span>
+                    </div>
+                    <div class="divtable">
+                       <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tablea">
+                            <tr hidden>
+                                <td align="center">年份</td>
+                                <td align="left">
+                                    <div class="chose">
+                                        <a href="#" class="active3">全部</a>
+                                        <a href="#">语文</a>
+                                        <a href="#">数学</a>
+                                        <a href="#">英语</a>
+                                        <a href="#">政治</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                       <div class="Catalog">
+                           
+                           <div class="Catalog_right">
+                               <div class="Catalogtitle">总计<em>15552</em>道题&nbsp;&nbsp;提示：单击体面可显示答案和解析&nbsp;&nbsp;
+                               <input type="checkbox" />
+                               <b>显示答案和解析</b>&nbsp;&nbsp;
+                               <a href="#" class="Thispage">本页全部试题加入试卷</a>
+                               <div><i>1</i>
+                               <a href="#" class="pageone">前</a>
+                               <a href="#" class="pagetwo">后</a>
+                               </div>
+                               </div>
+                               <div class="Catalog_rightnei">
+                                    <div class="Catalogtitwo">题号：25544&nbsp;&nbsp;题型：还是得&nbsp;&nbsp;难度：订餐&nbsp;&nbsp;上传人：女性司机&nbsp;&nbsp;来源：才能使得&nbsp;&nbsp;上传时间:220255&nbsp;&nbsp;组卷次数：<em>0</em></div>
+                                    <div class="Catalogcontent">
+                                        <div class="Catalogcontentup">题型</div>
+                                        <div class="Catalogcontentdown"><a href="#">审核通过</a><a href="#">审核不通过</a><a href="#">删除题目</a></div>
+                                    </div>
+                               </div>
+                               <div class="Catalog_rightnei">
+                                    <div class="Catalogtitwo">题号：25544&nbsp;&nbsp;题型：还是得&nbsp;&nbsp;难度：订餐&nbsp;&nbsp;上传人：女性司机&nbsp;&nbsp;来源：才能使得&nbsp;&nbsp;上传时间:220255&nbsp;&nbsp;组卷次数：<em>0</em></div>
+                                    <div class="Catalogcontent">
+                                    <div class="Catalogcontentup">题型</div>
+                                    <div class="Catalogcontentdown"><a href="#">加入试卷</a></div>
+                                    </div>
+                               </div>
+                           </div>
+                           <div class="clear"></div>
+                       </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clear"></div>
+        </div>
+
+   <script type="text/javascript">
+	 $(function(){
+		 //获取类型数据
+		 	 // $.getJSON("http://172.16.0.5:7777/test/exam/manager/getAllSubjectType.action",function(
+		 	  $.getJSON("theme/json/subject.json",function(
+
+		 	  	data){
+			  //克隆一份
+			  var newTr=$(".divtable tr:hidden").clone();
+			  //显示
+			  newTr.removeAttr("hidden");
+			  //
+			  newTr.find(".chose").html("");
+			  newTr.children("td").eq(0).html("类型");  
+			  data.forEach(function(item,index){
+				  //console.log(item.realName);
+				  var a="";
+				  if(index==0){
+				  a=$("<a href='javascript:void(0)' id="+item.id+" name="+item.name+" class='active3'>"+item.realName+"</a>")
+				  //console.log(a);
+				  }else{
+						a=$("<a href='javascript:void(0)' id="+item.id+" name="+item.name+">"+item.realName+"</a>")
+				  }
+					newTr.find(".chose").append(a);	  
+				  })
+			 	 $(".tablea").append(newTr);
+			  })
+			
+		//获取level数据
+		$.getJSON("http://172.16.0.5:7777/test/exam/manager/getAllSubjectLevel.action",function(data){
+			var newTr=$(".divtable tr:hidden").clone();
+			newTr.removeAttr("hidden");
+			newTr.find(".chose").html("");
+			newTr.children("td").eq(0).html("难易程度");
+			data.forEach(function(item,index){
+				var a="";
+				if(index==0){
+					a=$("<a href='javascript:void(0)' id="+item.id+" name="+item.realName+" class='active3'>"+item.realName+"</a>")
+					}else{
+					a=$("<a href='javascript:void(0)' id="+item.id+" name="+item.name+">"+item.realName+"</a>")}
+					newTr.find(".chose").append(a);
+				})
+				
+				$(".tablea").append(newTr);
+			})	 
+
+			
+		//获取方向数据	
+		$.getJSON("http://172.16.0.5:7777/test/exam/manager/getAllDepartmentes.action",function(data){
+			var newTr=$(".divtable tr:hidden").clone();
+			newTr.removeAttr("hidden");
+			newTr.find(".chose").html("");
+			newTr.children("td").eq(0).html("方向");
+			data.forEach(function(item,index){
+				var a="";
+				if(index==0){
+					a=$("<a href='javascript:void(0)' id="+item.id+" name="+item.name+" class='active3'>"+item.name+"</a>")
+					}else{
+					a=$("<a href='javascript:void(0)' id="+item.id+" name="+item.name+">"+item.name+"</a>")	
+					}
+					newTr.find(".chose").append(a);
+				})
+				
+				$(".tablea").append(newTr);
+			})	
+			 
+	
+			
+			
+			$.getJSON("http://172.16.0.5:7777/test/exam/manager/getAllTopics.action",function(data){
+			var newTr=$(".divtable tr:hidden").clone();
+			newTr.removeAttr("hidden");
+			newTr.find(".chose").html("");
+			newTr.children("td").eq(0).html("知识点");
+			data.forEach(function(item,index){
+				var a="";
+				if(index==0){
+					a=$("<a href='javascript:void(0)' id="+item.id+" class='active3'>"+item.title+"</a>")
+					}
+					else{
+				a=$("<a href='javascript:void(0)' id="+item.id+">"+item.title+"</a>")													}
+					newTr.find(".chose").append(a);
+				})
+				$(".tablea").append(newTr);
+			})	
+		
+	
+		//点击单个添加题目，跳进去添加题目的界面
+		$(".c_condition .icon_add").click(function(){
+			$(".right").load("theme/1/loadhtml/addSubject.html");
+			})
+
+
+
+
+	//给所有的a绑定一个click事件，并拿到选中的id，发送到后台
+			var arr=new Array();
+			$(".tablea").off("click");
+			$(".tablea").on("click","a",function(){
+				$(this).addClass("active3").siblings().removeClass("active3");
+				//拿到选中的按钮的id
+				//console.log($(".tablea .active3:eq(1)"))
+				var type=$(".tablea .active3:eq(1)").prop("id");
+				var direct=$(".tablea .active3:eq(2)").prop("id");
+				var level=$(".tablea .active3:eq(3)").prop("id");
+				var topic=$(".tablea .active3:eq(4)").prop("id");
+				var tiGanIndormation=$(".c_condition input[type='text']").val();
+				//console.log(tiGanIndormation)
+				$.ajax("http://172.16.0.5:7777/test/exam/manager/getAllSubjects.action",{
+					method:"POST",
+					data:{
+						"subject.department.id":direct,
+						"subject.topic.id":topic,
+						"subject.subjectType.id":type,
+						"subject.subjectLevel.id":level,
+						"subject.stem":tiGanIndormation
+						},
+						success:function(data){
+							alert(data);
+							data.forEach(function(index,item){
+								$(".Catalogcontentup").val(item[index]);
+								})
+							},
+						error:function(data){
+							console.log("fail")
+							}
+					
+					})
+				})
+		
+			
+
+
+	 //function showNum(data){
+		//$(".divtable").append($(".divtable table").clone(true));
+		//$(".divtable table").clone(true).addClass("tab");
+	   // data.forEach(function(item){
+		//  for(var index in item){
+			  
+		//	  }
+		//	  console.log(item.realName);
+		// for(var i=0;i<4;i++){
+			
+		//		  }
+		//})
+	//}
+		
+	 
+	 })
+</script>   

@@ -1,0 +1,314 @@
+<div class="editingarea">
+  <div class="c_flex"><span class="c_flexible"></span></div>
+  <div class="c_editview">
+    <div class="c_condition">
+       <span><select><option>题干</option></select></span>
+       <span class="pl5 " ><input type="text"></span>
+       <span class="pl15 pr15 btn_gray ">查找</span>
+       <span class="icon_lead-in"><em class="icon_r">批量导入题目</em></span>
+       <span class="icon_add"><em class="icon_r">单个添加题目</em></span>
+    </div>
+    <div class="divtable">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tablea">
+            <tr hidden>
+                <td align="center">年份</td>
+                <td align="left">
+                    <div class="chose">
+                      <a href="#" class="active3">全部</a>
+                      <a href="#">语文</a>
+                      <a href="#">数学</a>
+                      <a href="#">英语</a>
+                      <a href="#">政治</a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+       <div class="Catalog">
+           <div class="Catalog_right">
+               <div class="Catalogtitle">总计<em>15552</em>道题&nbsp;&nbsp;提示：单击体面可显示答案和解析&nbsp;&nbsp;<input type="checkbox" /><b>显示答案和解析</b>&nbsp;&nbsp;<a href="#" class="Thispage">本页全部试题加入试卷</a><div><i>1</i><a href="#" class="pageone">前</a><a href="#" class="pagetwo">后</a></div></div>
+               <div class="Catalog_rightnei" hidden>
+                    <div class="Catalogtitwo">题号：25544&nbsp;&nbsp;题型：还是得&nbsp;&nbsp;难度：订餐&nbsp;&nbsp;上传人：女性司机&nbsp;&nbsp;来源：才能使得&nbsp;&nbsp;上传时间:220255&nbsp;&nbsp;组卷次数：<em>0</em></div>
+                    <div class="Catalogcontent">
+                        <div class="Catalogcontentup"  >题目:&nbsp;</div>
+                        <div class="Catalogcontentdown">
+                          <a href="#">审核通过</a>
+                          <a href="#">审核不通过</a>
+                          <a href="#">删除题目</a>
+                        </div>
+                        <div class="subjectId" hidden></div>
+                    </div>
+                        
+               </div>
+               <div class="Catalog_rightnei" hidden>
+                    <div class="Catalogtitwo">题号：25544&nbsp;&nbsp;题型：还是得&nbsp;&nbsp;难度：订餐&nbsp;&nbsp;上传人：女性司机&nbsp;&nbsp;来源：才能使得&nbsp;&nbsp;上传时间:220255&nbsp;&nbsp;组卷次数：<em>0</em></div>
+                    <div class="Catalogcontent">
+                      <div class="Catalogcontentup">题目:&nbsp;</div>
+                      <div class="Catalogcontentdown">
+                        <a href="#">加入试卷</a>
+                      </div>
+                    </div>
+               </div>
+           </div>
+           <div class="clear"></div>
+       </div>
+    </div>
+</div>
+
+<script>
+  $(function(){
+
+    //对方法进行封装
+    // function find(url,key,val){
+    //   $.getJSON(url,function(data){
+    //     var tr = $("tr:hidden").clone().removeAttr("hidden");
+    //     tr.children("td").eq(0).html(key);
+    //     tr.find(".chose").html("");
+    //     data.forEach(function(item,index){
+    //       // console.log(index,item);
+    //       if(index ==0){
+    //         var a = $("<a href='' id = "+item.id+" name = "+item.name+" class='active3'>"+eval("item."+val)+"</a>");
+    //       }else{
+    //         var a = $("<a href='' id = "+item.id+" name = "+item.name+">"+eval("item."+val)+"</a>");
+    //       }
+    //       tr.find(".chose").append(a);
+    //     });
+    //     $(".tablea").append(tr);
+    //   });
+    // }
+
+
+    // find("epartment/findAlltype","类型","realName");
+    // find("epartment/findAlllevel","难易程度","realName");
+    // find("epartment/findAlldepartment","方向","name");
+    // find("epartment/findAlltopic","知识点","title");
+
+/*-------------------------------------------------------------------------*/ 
+
+
+    //获取所有类型数据
+  setTimeout(function(){
+
+    $.getJSON("epartment/findAlltype",function(data){
+      var tr = $("tr:hidden").clone().removeAttr("hidden");
+      tr.children("td").eq(0).html("类型");
+      tr.find(".chose").html("");
+      data.forEach(function(item,index){
+        // console.log(index,item);
+        if(index ==0){
+          var a = $("<a href='' id = "+item.id+" name = "+item.name+" class='active3'>"+item.realName+"</a>");
+        }else{
+          var a = $("<a href='' id = "+item.id+" name = "+item.name+">"+item.realName+"</a>");
+        }
+        tr.find(".chose").append(a);
+      });
+      $(".tablea").append(tr);
+    });
+
+  },50);
+
+
+     //获取所有难易程度数据
+  setTimeout(function(){
+
+    $.getJSON("epartment/findAlllevel",function(data){
+      var tr = $("tr:hidden").clone().removeAttr("hidden");
+      tr.children("td").eq(0).html("难易程度");
+      tr.find(".chose").html("");
+      data.forEach(function(item,index){
+        // console.log(index,item);
+        if(index ==0){
+          var a = $("<a href='' id = "+item.id+" name = "+item.name+"  class='active3'>"+item.realName+"</a>");
+        }else{
+          var a = $("<a href='' id = "+item.id+" name = "+item.name+">"+item.realName+"</a>");
+        }
+        tr.find(".chose").append(a);
+      });
+      $(".tablea").append(tr);
+    });
+
+  },100);
+
+
+     //获取所有方向
+  setTimeout(function(){
+
+    $.getJSON("epartment/findAlldepartment",function(data){
+      var tr = $("tr:hidden").clone().removeAttr("hidden");
+      tr.children("td").eq(0).html("方向");
+      tr.find(".chose").html("");
+      data.forEach(function(item,index){
+        // console.log(index,item);
+        if(index ==0){
+          var a = $("<a href='' id = "+item.id+" name = "+item.name+" class='active3'>"+item.name+"</a>");
+        }else{
+          var a = $("<a href='' id = "+item.id+" name = "+item.name+">"+item.name+"</a>");
+        }
+        tr.find(".chose").append(a);
+      });
+      $(".tablea").append(tr);
+    });
+
+  },150);
+
+
+     //获取所有知识点
+  setTimeout(function(){
+
+    $.getJSON("epartment/findAlltopic",function(data){
+      var tr = $("tr:hidden").clone().removeAttr("hidden");
+      tr.children("td").eq(0).html("知识点");
+      tr.find(".chose").html("");
+      data.forEach(function(item,index){
+        // console.log(index,item);
+        if(index ==0){
+          var a = $("<a href='' id = "+item.id+" class='active3'>"+item.title+"</a>");
+        }else{
+          var a = $("<a href='' id = "+item.id+">"+item.title+"</a>");
+        }
+        tr.find(".chose").append(a);
+      });
+      $(".tablea").append(tr);
+    });
+    
+  },200);
+
+
+    //点击跳转单个添加题目
+    $(".icon_add .icon_r").on('click',function(){
+        $('.right').load("./load/addSubject.html");
+    });
+
+
+
+    //给每个选项绑定事件
+    $(".tablea").off('click');
+    //事件代理，通过选中的属性，显示相应的已存在的题目，在subject中，还需要进一步进行连表查询
+    $(".tablea").on('click','a',function(event){
+      //事件代理
+      $(this).addClass("active3").siblings().removeClass("active3");
+      //阻止事件默认行为
+      event.preventDefault();
+
+      var arr = new Array();
+
+      var arr = $("table").find("a").filter(":visible").map(function(index,item){
+        if($(item).hasClass("active3")){
+          // console.log(item.id);
+          return item.id;
+        }
+      }).toArray();
+        // console.log(arr);
+        var type = arr[0];
+        var level = arr[1];
+        var epartment = arr[2];
+        var topic = arr[3];
+        // console.log(type,level,epartment,topic);
+        $.ajax("epartment/findSubject",{
+          method:"POST",
+          data:{
+            "type":type,
+            "level":level,
+            "epartment":epartment,
+            "topic":topic
+          },
+          success:function(data){
+            show(data);
+            
+          }
+        });
+        
+    });
+
+
+
+    //用来显示题目
+    function show(data){
+        $(".Catalog_rightnei:not(:hidden)").remove();
+        data.forEach(function(item,index){
+          var showSub = $(".Catalog_rightnei:eq(0)").clone();
+          showSub.removeAttr("hidden");
+          $(".Catalog_right").append(showSub);
+          //需连表查询才能有item.tbl_exam_subjecttype.realName 重命名为tName等
+          showSub.find(".Catalogtitwo").html("题号:"+item.id+"&nbsp;&nbsp;题型:"+item.tName+"&nbsp;&nbsp;难度:"+item.lName+"&nbsp;&nbsp;上传人:"+item.user+"&nbsp;&nbsp;来源:"+null+"&nbsp;&nbsp;上传时间:"+item.uploadTime+"&nbsp;&nbsp;组卷次数:<em>0</em>");
+
+
+          //显示题目
+          var stem = $("<span>"+item.stem+"</span>");
+          showSub.find(".Catalogcontentup").append(stem);
+          // $(".Catalogcontentup").append(sub);
+
+          //显示选项
+          // var content = $("<p>"+item.content+"</p>");
+          // showSub.find(".Catalogcontentup").append(content);
+         
+          var id = $("<span>"+item.id+"</span>");
+          showSub.find(".subjectId").append(id);
+
+          
+
+        
+        });
+       
+        //显示选项
+          // $.ajax("epartment/findContent",{
+          //     method:"POST",
+          //     data:{
+          //       "id":$(this).
+          //     },
+          //     success:function(data){
+          //       console.log(data);
+          //       data.forEach(function(item,index){
+          //         console.log(item);
+          //         var content = $("<p>"+item.content+"</p>");
+          //         showSub.find(".Catalogcontentup").append(content);
+          //       });              
+          //     }
+          // });
+
+
+        //审查题目
+          $(".Catalogcontentdown").on('click','a',function(event){
+              var check = $(this).html();
+              console.log(check);
+              var id = $(this).parent().next().text();
+              // console.log(id);
+              switch(check){
+                  case "审核通过":
+                      $.ajax("epartment/checkState",{
+                        method:"POST",
+                        data:{
+                          "id":id,
+                          "checkState":"通过"
+                        },
+                        success:function(data){
+                          alert(check);
+                        }
+                      });
+                    break;
+                  case "审核不通过":
+                      $.ajax("epartment/checkState",{
+                        method:"POST",
+                        data:{
+                          "id":id,
+                          "checkState":"未通过"
+                        },
+                        success:function(data){
+                          alert(check);
+                        }
+                      });
+                    break;
+
+              }
+              event.preventDefault();
+          });
+
+              
+    }
+
+
+    
+  });
+</script>
+
+
