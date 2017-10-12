@@ -17,7 +17,7 @@
              <div class="Attributecontent">
                  <div class="Attributecontent_left">
                      <b>
-                     	题型：<select name="type" >
+                     	题型：<select name="type" class="selecttype">
                        	    </select>
                      </b>
                      <b>
@@ -53,7 +53,9 @@
                 <div class="Answerpart">
                      <div class="Answerpart_left">
                          <p>A</p><span>
-                         <input type="radio" name="answer"/></span>
+                         <!-- 单选 -->
+                         <input type="radio" name="answer"/>
+                         <!-- 多选 -->
                      </div>
                      <div class="Answerpart_right">
                      	<textarea name="choiceContent"></textarea>   
@@ -63,8 +65,9 @@
                 <div class="Answerpart">
                     <div class="Answerpart_left">
                         <p>B</p><span>
-                        <input type="radio" name="answer"/>
-                        </span>
+                        <!-- 单选 -->
+                         <input type="radio" name="answer"/>
+                         <!-- 多选 -->
                     </div>
                     <div class="Answerpart_right">
                     	<textarea name="choiceContent"></textarea>  
@@ -74,8 +77,9 @@
                 <div class="Answerpart">
                     <div class="Answerpart_left">
                         <p>C</p><span>
-                        <input type="radio" name="answer"/>
-                        </span>
+                        <!-- 单选 -->
+                         <input type="radio" name="answer"/>
+                         <!-- 多选 -->
                     </div>
                     <div class="Answerpart_right">
                     	<textarea name="choiceContent"></textarea>  
@@ -85,8 +89,9 @@
                 <div class="Answerpart">
                     <div class="Answerpart_left">
                         <p>D</p><span>
-                        <input type="radio" name="answer"/>
-                        </span>
+                        <!-- 单选 -->
+                         <input type="radio" name="answer"/>
+                         <!-- 多选 -->
                     </div>
                     <div class="Answerpart_right">
                     	<textarea name="choiceContent"></textarea>  
@@ -125,13 +130,178 @@
 
 <script>
     $(function(){
-        //将数据库中的数据传入select的option中
-            var a = "请选择";
-            var opt = $("<option value="+a+">"+a+"</option>");
-            $("select[name=type]").append(opt);
-            $.ajax('',{
-                
+    //点击右上角的×，跳转到首页
+        $(".deletetitle").on('click',function(){
+          $('.right').load("../load/showSubject.html");
+        });
+
+
+    //将数据库中的数据传入select的option中
+        //题型数据
+            $.getJSON('epartment/findAlltype',function(data){
+                // console.log(data);
+                data.forEach(function(item,index){
+                    // console.log(item.realName);
+                    var opt = $("<option value='"+item.id+"' id="+item.id+">"+item.realName+"</option>");
+                    $("select[name=type]").append(opt);
+                });
             });
+
+        //方向数据
+            $.getJSON('epartment/findAlldepartment',function(data){
+                // console.log(data);
+                data.forEach(function(item,index){
+                    // console.log(item.name);
+                    var opt = $("<option value='"+item.id+"' id="+item.id+">"+item.name+"</option>");
+                    $("select[name=department]").append(opt);
+                });
+            }); 
+
+        //难度数据
+            $.getJSON('epartment/findAllLevel',function(data){
+                // console.log(data);
+                data.forEach(function(item,index){
+                    // console.log(item.realName);
+                    var opt = $("<option value='"+item.id+"' id="+item.id+">"+item.realName+"</option>");
+                    $("select[name=level]").append(opt);
+                });
+            }); 
+
+        //知识点数据   
+            $.getJSON('epartment/findAllTopic',function(data){
+                // console.log(data);
+                data.forEach(function(item,index){
+                    // console.log(item.title);
+                    // console.log(item.id);
+                    var opt = $("<option value='"+item.id+"' id="+item.id+">"+item.title+"</option>");
+                    $("select[name=topic]").append(opt);
+                });
+            }); 
+
+        //当选中单选或多选或简答题时，答案的显示框需要有相应的改变
+            $('.selecttype').on('click',function(){
+                var val = $(this).val();
+                // console.log(val);
+                if(val == "1"){
+                    $('.Answercontent').css("display","block");
+                    $('.c_condition').css("display","block");
+                    $('.Answerpart .Answerpart_left input').attr("type","radio");
+                    $('.chapterAnswer').css("display","none");
+                }else if(val == "2"){
+                    $('.Answercontent').css("display","block");
+                    $('.c_condition').css("display","block");
+                    $('.Answerpart .Answerpart_left input').attr("type","checkbox");
+                    $('.chapterAnswer').css("display","none");
+                }else if(val == "3"){
+                    $('.Answercontent').css("display","none");
+                    $('.c_condition').css("display","none");
+                    $('.chapterAnswer').css("display","block");
+                }
+
+            });
+
+
+
+
+
+
+
+
+
+        //添加题目，先将题干等信息获取，然后保存到数据库subject表中
+        //给保存添加事件       
+        $(".saveContinue").on('click',function(){
+        //0.获取下拉链表中的属性的id值
+            var type = $("select[name='type'] option:selected").val();
+            var level = $("select[name='level'] option:selected").val();
+            var epartment = $("select[name='department'] option:selected").val();
+            var topic = $("select[name='topic'] option:selected").val();
+            // console.log(typeof(Number(epartment)));
+            // console.log(Number(epartment));
+            // console.log(Number(level));
+            // console.log(Number(type));
+            // console.log(Number(topic));
+         //1.获取textarea中的值
+            //stem 为题干信息
+            var stem = $("textarea[name='stem']").val();
+            // console.log(stem);
+            //选项内容 
+            var content = new Array();
+            var content = $("textarea[name='choiceContent']").map(function(index,item){
+                return item.value;
+            }).toArray().toString();
+            console.log(content);
+            //也是subject表中answer的数据
+            var answer = content;
+            // console.log(answer);
+            //analtsis 为题目分析
+            var analysis = $("textarea[name='analysis']").val();
+            // console.log(analysis);
+            //data 为现在更新的时间
+            var date = new Date();
+            date = date.toLocaleDateString();
+            console.log(date);
+            console.log(type);
+        //获取到各个选项的选项内容，和选中的按钮的即正确答案的的值
+            var correct = new Array();
+            if(type ==1){
+                correct = $("input[type='radio']").map(function(index,item){
+                    if(item.checked){
+                        return 1;
+                    }else{
+                        return 0;
+                    }
+                }).toArray().toString();
+            }else if(type==2){
+                correct = $("input[type='checkbox']").map(function(index,item){
+                    if(item.checked){
+                        return 1;
+                    }else{
+                        return 0;
+                    }
+                }).toArray().toString();
+            }
+            
+            console.log(correct);
+
+        //2.将获取到的数据传送到后台
+            var subject = {
+                "analysis":analysis,
+                "answer":answer,
+                "checkState":"未审核",
+                "stem":stem,
+                "updateTime":date,
+                "epartment":epartment,
+                "level":level,
+                "type":type,
+                "topic":topic,
+            };
+            $.ajax("epartment/addSubject",{
+                method:"POST",
+                data:subject,
+                success:function(data){
+                    $.getJSON('epartment/findId',function(data){
+                        console.log(data[0].id);
+                        $.ajax("epartment/addChoice",{
+                            method:"POST",
+                            data:{
+                                "content":content,
+                                "correct":correct,
+                                "id":data[0].id,
+                            },
+                            sucess:function(data){
+                                $('.right').load("./load/addSubject.html");
+                                alert("成功");
+                            }
+
+                        });
+                    });
+
+                }
+            });
+        });
+
+
             
     });
     

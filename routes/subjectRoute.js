@@ -103,4 +103,58 @@ route.get('/query/:keys',(req,resp)=>{
 	});
 });
 
+
+//向subject表中添加题目
+route.post('/addSubject',(req,resp)=>{
+	var subject = req.body;
+	console.log(subject);
+	subjectDB.addSubject(subject).then((data)=>{
+		resp.send(data);
+	}).catch((error)=>{
+		resp.send(error);
+	}); 
+});
+
+//获取最新题目的id
+route.get('/findId',(req,resp)=>{
+	console.log("+++++++++++++++++++++++++++++++","id值");
+	subjectDB.findId().then((data)=>{
+		console.log("----------------",data);
+		resp.send(data);
+	}).catch((error)=>{
+		resp.send(error);
+	});
+});
+
+
+//向choice表插入数据
+route.post('/addChoice',(req,resp)=>{
+	var content = req.body.content;
+	content = content.split(",");
+	console.log("这是选项内容数组",content);
+	var correct = req.body.correct;
+	correct = correct.split(",");
+	console.log("这是正确答案数组",correct);
+	var id = req.body.id;
+	console.log("这是当前题目的id",id);
+	subjectDB.addChoice(content,correct,id).then((data)=>{
+		resp.send(data);
+	}).catch((error)=>{
+		resp.send(error);
+	}); 
+});
+
+
+
+//删除题目
+route.post('/delSubject',(req,resp)=>{
+	var id = req.body.id;
+	console.log("+++++++++++++++++++++++++++++++","id值");
+	subjectDB.delSubject(id).then((data)=>{
+		resp.send(data);
+	}).catch((error)=>{
+		resp.send(error);
+	});
+});
+
 module.exports = route;

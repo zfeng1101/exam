@@ -31,6 +31,7 @@
                     <div class="Catalogtitwo">题号：25544&nbsp;&nbsp;题型：还是得&nbsp;&nbsp;难度：订餐&nbsp;&nbsp;上传人：女性司机&nbsp;&nbsp;来源：才能使得&nbsp;&nbsp;上传时间:220255&nbsp;&nbsp;组卷次数：<em>0</em></div>
                     <div class="Catalogcontent">
                         <div class="Catalogcontentup"  >题目:&nbsp;</div>
+                        <div class="Catalogcontentcenter" hidden style="margin-top: -80px">答案与解析:&nbsp;</div>
                         <div class="Catalogcontentdown">
                           <a href="#" class="ch">审核通过</a>
                           <a href="#" class="ch">审核不通过</a>
@@ -185,13 +186,14 @@
 
     $(".btn_gray").on('click',function(){
         var key = $(".pl5 input").val();
+        // console.log(key);
         $.getJSON("epartment/query/"+key,function(data){
           //对后台返回的数据进行单个获取
             var type = data[0].subjectType_id;
             var level = data[0].subjectLevel_id;
             var epartment = data[0].department_id;
             var topic = data[0].topic_id;
-            // console.log(type,level,epartment,topic);
+            console.log(type,level,epartment,topic);
           //再次发送ajax请求，为了将所查询的数据显示在页面中
             $.ajax("epartment/findSubject",{
                 method:"POST",
@@ -199,7 +201,7 @@
                   "type":type,
                   "level":level,
                   "epartment":epartment,
-                  "topic":topic
+                  "topic":topic,
                 },
                 success:function(data){
                   show(data);
@@ -211,18 +213,19 @@
 
 
 
-    //给每个选项绑定事件
+    //给每个选项a绑定事件
+    //先清空click事件
     $(".tablea").off('click');
     //事件代理，通过选中的属性，显示相应的已存在的题目，在subject中，还需要进一步进行连表查询
     $(".tablea").on('click','a',function(event){
-      //事件代理
+      //给当前点击的a添加样式，并且去除掉其他相应a的样式
       $(this).addClass("active3").siblings().removeClass("active3");
       //阻止事件默认行为
       event.preventDefault();
 
       var arr = new Array();
       //遍历所有选中的a，将它的id值存放在数组中，
-      var arr = $("table").find("a").filter(":visible").map(function(index,item){
+      arr = $("table").find("a").filter(":visible").map(function(index,item){
         if($(item).hasClass("active3")){
           // console.log(item.id);
           return item.id;
@@ -234,6 +237,7 @@
         var epartment = arr[2];
         var topic = arr[3];
         // console.log(type,level,epartment,topic);
+        //获取到相应的id值，发送请求，查找subject表中相应的信息
       $.ajax("epartment/findSubject",{
           method:"POST",
           data:{
@@ -243,6 +247,7 @@
             "topic":topic
           },
           success:function(data){
+            //成功后调用show函数
             show(data);
             
           }
@@ -260,10 +265,13 @@
 
     //用来显示题目
     function show(data){
+      //将用来显示题目的div去除它的hidden属性，显示出来
         $(".Catalog_rightnei:not(:hidden)").remove();
         data.forEach(function(item,index){
+          //克隆
           var showSub = $(".Catalog_rightnei:eq(0)").clone();
           showSub.removeAttr("hidden");
+          //
           $(".Catalog_right").append(showSub);
         //需连表查询才能有item.tbl_exam_subjecttype.realName 由于连表查询出结果会存在两个列名都为realName,所以在写SQL语句的时候就将其重命名了，重命名为tName，lName等
           showSub.find(".Catalogtitwo").html("题号:"+item.id+"&nbsp;&nbsp;题型:"+item.tName+"&nbsp;&nbsp;难度:"+item.lName+"&nbsp;&nbsp;上传人:"+item.user+"&nbsp;&nbsp;来源:"+null+"&nbsp;&nbsp;上传时间:"+item.uploadTime+"&nbsp;&nbsp;组卷次数:<em>0</em>");
@@ -290,31 +298,48 @@
               var id = $("<span>"+item.id+"</span>");
               showSub.find(".subjectId").append(id);
           }
+
+
+        //显示解析或答案
+            analysi = $("<p>"+item.analysis+"</p>");
+            analysi.css("margin-left","30px");
+            analysi.css("color","blue");
+            showSub.find(".Catalogcontentcenter").append(analysi);
           
         //显示单选或多选的选项值
+        //tName为tbl_exam_subjectType表中的realName 列
+        //判断tName的值，当类型为单选题或多选题时
           if(item.tName=="单选题" || item.tName=="复选题"){
-              //获取id的值
+              //获取当前题目的id值
               var content = item.id;  
               //显示选项
               //通过这个题目的id，在tbl_exam_choice 中找到相应题目的选项
+              //发送请求
               $.ajax("epartment/findContent",{
                   method:"POST",
                   data:{
                     "id":content
                   },
                   success:function(data){
+                    //返回的数据是data,然后遍历它
+                    // console.log("+-+_=+_",data);
                     data.forEach(function(item,index){
+                      //item对应一个选项的内容(包括id,Content，correct，subject_id)
+                      // console.log(item);
                       //当correct=1时表示相对应content值为正确值/答案
-                      //correct是一个buffer，所以我们需要获取他的data属性里的值。
+                      //由于correct是一个buffer，所以我们需要获取他的data属性里的值。
                       // console.log(item.correct);
                       // console.log("-------",item.correct.data[0]);
                       // console.log("-------",item.content);
 
-                      //String.formCharCode()
-                      //A 的ASCII码值为65，所以用相应的选项的index值加上65，再转换就可以是ABCD了
+                    //formCharCode()可接受一个制定的Unicode值，然后返回一个字符串，是String的静态方法
+                      //A 的ASCII码值为65，所以用相应的选项的index值加上65，再转换为相应的字符ABCD
+                      //index 是每个选项对应的索引值
+                      //然后把选项追加在用来显示题目的那个div中
                       var content = $("<p>"+String.fromCharCode(index+65)+".&nbsp;"+item.content+"</p>");
                       showSub.find(".Catalogcontentup").append(content);
                       content.css("margin-left","30px");
+                      //这里是用来判断正确值，当它的correct值为1时，表示为正确答案，给他的选项添加css,变为红色
                       if(item.correct.data[0]==1){
                           content.css("color","red");
                       }
@@ -334,33 +359,7 @@
           }
 
 
-        //点击checkbox后，在相应的地方显示出相应题目的解析和答案
-        //当再次点击即取消选中时，相应的内容影藏
           
-          $(".Catalogtitle").find("input:checkbox").on('change',function(){
-                var val = $(this).prop("checked");
-                var a = "解析和答案";
-                var analysi = $("<div class='analysi' hidden></div>");
-                showSub.find(".Catalogcontentup").append(analysi);
-                ana = $("<br><br>"+a+"<p>"+item.analysis+"</p>");
-                ana.css("margin-left","30px");
-                showSub.find(".analysi").append(ana);
-
-                
-                if(val){
-                  $(".analysi").show();
-                  // var a = "解析和答案";
-                  // analysi = $("<br><br>"+a+":<p>"+item.analysis+"</p>");
-                  // analysi.css("margin-left","30px");
-                  // showSub.find(".Catalogcontentup").append(analysi);
-                }else{
-                  $(".analysi").hide();
-                  // analysi = $("");
-                  // showSub.find(".analysi").append(analysi);
-                }
-                
-
-          });
       
 //data.forEach大括号的结尾       
       });
@@ -368,10 +367,13 @@
       
         //审查题目
           $(".Catalogcontentdown").on('click','a',function(event){
+            //获取当前点击的内容
               var check = $(this).html();
               console.log(check);
+            //获取当前题目的id
               var id = $(this).parent().next().text();
               console.log(id);
+            //进行判断，发送请求
               switch(check){
                   case "审核通过":
                       $.ajax("epartment/checkState",{
@@ -405,8 +407,39 @@
           });
 
 
+        //删除题目
+          $('.Catalogcontentdown').on('click','a',function(event){
+            //获取当前题目的id值
+              var id = $(this).parent().next().text();
+              console.log(id);
+            //通过id值向后台发送请求，删除数据
+              $.ajax("epartment/delSubject",{
+                  method:"POST",
+                  data:{
+                      "id":id
+                  },
+                  success:function(data){
+                      alert("删除成功");
+                      $('.Catalog_rightnei').remove();
+
+                  }
+              });
+          });
+
+
 //show函数的结束括号
     }
+        //点击checkbox后，在相应的地方显示出相应题目的解析和答案
+        //当再次点击即取消选中时，相应的内容影藏
+            $(".Catalogtitle").find("input:checkbox").on('change',function(){
+              //当checked的值为true的时候，显示相应的div中的内容，否则影藏
+                if(this.checked){
+                  $(".Catalogcontentcenter").show();
+                }else{
+                  $(".Catalogcontentcenter").hide();
+                }
+                    
+            });
 
     
   });
