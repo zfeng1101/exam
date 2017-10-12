@@ -41,13 +41,19 @@ module.exports = {
 
 	//查询出选项
 	findContent(id){
-		var sql = "select content from tbl_exam_choice where subject_id = "+id;
+		var sql = "select * from tbl_exam_choice where subject_id = "+id;
 		return pool.execute(sql);
 	},
 
 	//审核
 	checkState(id,checkState){
 		var sql = "update tbl_exam_subject set checkState = '"+checkState+"' where id = "+id+" ";
+		return pool.execute(sql);
+	},
+
+	//模糊查询
+	query(keys){
+		var sql ="select * from tbl_exam_subject where stem like '%"+keys+"%' ";
 		return pool.execute(sql);
 	}
 

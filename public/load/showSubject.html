@@ -32,15 +32,16 @@
                     <div class="Catalogcontent">
                         <div class="Catalogcontentup"  >题目:&nbsp;</div>
                         <div class="Catalogcontentdown">
-                          <a href="#">审核通过</a>
-                          <a href="#">审核不通过</a>
-                          <a href="#">删除题目</a>
+                          <a href="#" class="ch">审核通过</a>
+                          <a href="#" class="ch">审核不通过</a>
+                          <a href="#" class="ch">删除题目</a>
+                          <a href="#" class="ch">加入试卷</a>
                         </div>
                         <div class="subjectId" hidden></div>
                     </div>
                         
                </div>
-               <div class="Catalog_rightnei" hidden>
+               <!-- <div class="Catalog_rightnei" hidden>
                     <div class="Catalogtitwo">题号：25544&nbsp;&nbsp;题型：还是得&nbsp;&nbsp;难度：订餐&nbsp;&nbsp;上传人：女性司机&nbsp;&nbsp;来源：才能使得&nbsp;&nbsp;上传时间:220255&nbsp;&nbsp;组卷次数：<em>0</em></div>
                     <div class="Catalogcontent">
                       <div class="Catalogcontentup">题目:&nbsp;</div>
@@ -48,7 +49,7 @@
                         <a href="#">加入试卷</a>
                       </div>
                     </div>
-               </div>
+               </div> -->
            </div>
            <div class="clear"></div>
        </div>
@@ -180,6 +181,35 @@
     });
 
 
+    //通过关键字查询题目/模糊查询
+
+    $(".btn_gray").on('click',function(){
+        var key = $(".pl5 input").val();
+        $.getJSON("epartment/query/"+key,function(data){
+          //对后台返回的数据进行单个获取
+            var type = data[0].subjectType_id;
+            var level = data[0].subjectLevel_id;
+            var epartment = data[0].department_id;
+            var topic = data[0].topic_id;
+            // console.log(type,level,epartment,topic);
+          //再次发送ajax请求，为了将所查询的数据显示在页面中
+            $.ajax("epartment/findSubject",{
+                method:"POST",
+                data:{
+                  "type":type,
+                  "level":level,
+                  "epartment":epartment,
+                  "topic":topic
+                },
+                success:function(data){
+                  show(data);
+                  
+                }
+            });
+        });
+    });
+
+
 
     //给每个选项绑定事件
     $(".tablea").off('click');
@@ -191,7 +221,7 @@
       event.preventDefault();
 
       var arr = new Array();
-
+      //遍历所有选中的a，将它的id值存放在数组中，
       var arr = $("table").find("a").filter(":visible").map(function(index,item){
         if($(item).hasClass("active3")){
           // console.log(item.id);
@@ -204,7 +234,7 @@
         var epartment = arr[2];
         var topic = arr[3];
         // console.log(type,level,epartment,topic);
-        $.ajax("epartment/findSubject",{
+      $.ajax("epartment/findSubject",{
           method:"POST",
           data:{
             "type":type,
@@ -216,9 +246,15 @@
             show(data);
             
           }
-        });
+      });
         
     });
+
+
+
+
+
+
 
 
 
@@ -229,50 +265,113 @@
           var showSub = $(".Catalog_rightnei:eq(0)").clone();
           showSub.removeAttr("hidden");
           $(".Catalog_right").append(showSub);
-          //需连表查询才能有item.tbl_exam_subjecttype.realName 重命名为tName等
+        //需连表查询才能有item.tbl_exam_subjecttype.realName 由于连表查询出结果会存在两个列名都为realName,所以在写SQL语句的时候就将其重命名了，重命名为tName，lName等
           showSub.find(".Catalogtitwo").html("题号:"+item.id+"&nbsp;&nbsp;题型:"+item.tName+"&nbsp;&nbsp;难度:"+item.lName+"&nbsp;&nbsp;上传人:"+item.user+"&nbsp;&nbsp;来源:"+null+"&nbsp;&nbsp;上传时间:"+item.uploadTime+"&nbsp;&nbsp;组卷次数:<em>0</em>");
 
 
-          //显示题目
+        //显示题目
           var stem = $("<span>"+item.stem+"</span>");
           showSub.find(".Catalogcontentup").append(stem);
           // $(".Catalogcontentup").append(sub);
 
-          //显示选项
-          // var content = $("<p>"+item.content+"</p>");
-          // showSub.find(".Catalogcontentup").append(content);
-         
-          var id = $("<span>"+item.id+"</span>");
-          showSub.find(".subjectId").append(id);
 
+        //存放题目id
+          var sid = $("<span>"+item.id+"</span>");
+          showSub.find(".subjectId").append(sid);
+
+        //显示答案
+          if(item.tName=="简答题"){
+              var a="答案"
+              var answer = $("<p>"+a+":&nbsp;"+item.answer+"</p>");
+              showSub.find(".Catalogcontentup").append(answer);
+              answer.css("margin-left","30px");
+              answer.css("color","red");
+             
+              var id = $("<span>"+item.id+"</span>");
+              showSub.find(".subjectId").append(id);
+          }
           
+        //显示单选或多选的选项值
+          if(item.tName=="单选题" || item.tName=="复选题"){
+              //获取id的值
+              var content = item.id;  
+              //显示选项
+              //通过这个题目的id，在tbl_exam_choice 中找到相应题目的选项
+              $.ajax("epartment/findContent",{
+                  method:"POST",
+                  data:{
+                    "id":content
+                  },
+                  success:function(data){
+                    data.forEach(function(item,index){
+                      //当correct=1时表示相对应content值为正确值/答案
+                      //correct是一个buffer，所以我们需要获取他的data属性里的值。
+                      // console.log(item.correct);
+                      // console.log("-------",item.correct.data[0]);
+                      // console.log("-------",item.content);
 
-        
-        });
-       
-        //显示选项
-          // $.ajax("epartment/findContent",{
-          //     method:"POST",
-          //     data:{
-          //       "id":$(this).
-          //     },
-          //     success:function(data){
-          //       console.log(data);
-          //       data.forEach(function(item,index){
-          //         console.log(item);
-          //         var content = $("<p>"+item.content+"</p>");
-          //         showSub.find(".Catalogcontentup").append(content);
-          //       });              
-          //     }
-          // });
+                      //String.formCharCode()
+                      //A 的ASCII码值为65，所以用相应的选项的index值加上65，再转换就可以是ABCD了
+                      var content = $("<p>"+String.fromCharCode(index+65)+".&nbsp;"+item.content+"</p>");
+                      showSub.find(".Catalogcontentup").append(content);
+                      content.css("margin-left","30px");
+                      if(item.correct.data[0]==1){
+                          content.css("color","red");
+                      }
+                    });              
+                  }
+              });
+          }
 
 
+        //加载数据时，判断checkState的值，当值为‘通过’时，同时只显示加入试卷，否则不变,
+          if(item.checkState =="通过"){
+              showSub.find(".ch").hide();
+              showSub.find(".ch:contains('加入试卷')").show();
+          }else if(item.checkState=="未审核" || item.checkState=="未通过"){
+              showSub.find(".ch").show();
+              showSub.find(".ch:contains('加入试卷')").hide();
+          }
+
+
+        //点击checkbox后，在相应的地方显示出相应题目的解析和答案
+        //当再次点击即取消选中时，相应的内容影藏
+          
+          $(".Catalogtitle").find("input:checkbox").on('change',function(){
+                var val = $(this).prop("checked");
+                var a = "解析和答案";
+                var analysi = $("<div class='analysi' hidden></div>");
+                showSub.find(".Catalogcontentup").append(analysi);
+                ana = $("<br><br>"+a+"<p>"+item.analysis+"</p>");
+                ana.css("margin-left","30px");
+                showSub.find(".analysi").append(ana);
+
+                
+                if(val){
+                  $(".analysi").show();
+                  // var a = "解析和答案";
+                  // analysi = $("<br><br>"+a+":<p>"+item.analysis+"</p>");
+                  // analysi.css("margin-left","30px");
+                  // showSub.find(".Catalogcontentup").append(analysi);
+                }else{
+                  $(".analysi").hide();
+                  // analysi = $("");
+                  // showSub.find(".analysi").append(analysi);
+                }
+                
+
+          });
+      
+//data.forEach大括号的结尾       
+      });
+
+      
         //审查题目
           $(".Catalogcontentdown").on('click','a',function(event){
               var check = $(this).html();
               console.log(check);
               var id = $(this).parent().next().text();
-              // console.log(id);
+              console.log(id);
               switch(check){
                   case "审核通过":
                       $.ajax("epartment/checkState",{
@@ -281,8 +380,11 @@
                           "id":id,
                           "checkState":"通过"
                         },
+
                         success:function(data){
-                          alert(check);
+                          // // 点击审查后，只显示加入试卷,当下一次加载数据时，审查通过的就只显示加入试卷，审查不通过的依旧显示那三个a标签
+                            $(".ch").hide();
+                            $(".ch:contains('加入试卷')").show();
                         }
                       });
                     break;
@@ -294,18 +396,17 @@
                           "checkState":"未通过"
                         },
                         success:function(data){
-                          alert(check);
+                          alert("此题未通过审核");
                         }
                       });
                     break;
-
               }
               event.preventDefault();
           });
 
-              
-    }
 
+//show函数的结束括号
+    }
 
     
   });

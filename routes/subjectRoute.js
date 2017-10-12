@@ -91,4 +91,16 @@ route.post('/checkState',(req,resp)=>{
 	});
 });
 
+
+//模糊查询或是关键字查询
+route.get('/query/:keys',(req,resp)=>{
+	var keys = req.params.keys;
+	console.log(keys);
+	subjectDB.query(keys).then((data)=>{
+		resp.send(data);
+	}).catch((error)=>{
+		resp.send(error);
+	});
+});
+
 module.exports = route;

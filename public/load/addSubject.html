@@ -17,7 +17,7 @@
              <div class="Attributecontent">
                  <div class="Attributecontent_left">
                      <b>
-                     	题型：<select name="type">
+                     	题型：<select name="type" >
                        	    </select>
                      </b>
                      <b>
@@ -125,8 +125,14 @@
 
 <script>
     $(function(){
-        var opt = $("<option>"+请选择+"</option>");
-        $(".Attributecontent_left.eq(0):select").append(opt);
+        //将数据库中的数据传入select的option中
+            var a = "请选择";
+            var opt = $("<option value="+a+">"+a+"</option>");
+            $("select[name=type]").append(opt);
+            $.ajax('',{
+                
+            });
+            
     });
     
 </script>
