@@ -54,15 +54,19 @@ route.get('/findAlltopic',(req,resp)=>{
 //查询所有已有题目
 route.post('/findSubject',(req,resp)=>{
 	console.log("++++++++++++++++++++++++++++++++++","选中的题目");
+	//依次获取前台传过来的参数
 	var type = req.body.type;
 	var level = req.body.level;
 	var epartment = req.body.epartment;
 	var topic = req.body.topic;
 	console.log(type,level,epartment,topic);
+	//然后调用findSubject这个方法,把参数传过去
 	subjectDB.findSubject(type,level,epartment,topic).then((data)=>{
 		console.log("-------有沙滩",data);
+		//把查找到的数据发送到前端
 		resp.send(data);
 	}).catch((error)=>{
+		//如果出错，就返回错误信息
 		resp.send(error);
 	});
 });
@@ -107,7 +111,7 @@ route.get('/query/:keys',(req,resp)=>{
 //向subject表中添加题目
 route.post('/addSubject',(req,resp)=>{
 	var subject = req.body;
-	console.log(subject);
+	console.log('subject-------',subject);
 	subjectDB.addSubject(subject).then((data)=>{
 		resp.send(data);
 	}).catch((error)=>{
@@ -117,9 +121,9 @@ route.post('/addSubject',(req,resp)=>{
 
 //获取最新题目的id
 route.get('/findId',(req,resp)=>{
-	console.log("+++++++++++++++++++++++++++++++","id值");
+	// console.log("+++++++++++++++++++++++++++++++","id值");
 	subjectDB.findId().then((data)=>{
-		console.log("----------------",data);
+		// console.log("----------------",data);
 		resp.send(data);
 	}).catch((error)=>{
 		resp.send(error);
@@ -131,17 +135,20 @@ route.get('/findId',(req,resp)=>{
 route.post('/addChoice',(req,resp)=>{
 	var content = req.body.content;
 	content = content.split(",");
-	console.log("这是选项内容数组",content);
 	var correct = req.body.correct;
 	correct = correct.split(",");
-	console.log("这是正确答案数组",correct);
-	var id = req.body.id;
-	console.log("这是当前题目的id",id);
-	subjectDB.addChoice(content,correct,id).then((data)=>{
-		resp.send(data);
-	}).catch((error)=>{
-		resp.send(error);
-	}); 
+	var id = +req.body.id;
+	console.log('id',id)
+	content.forEach(function(item,index){
+		var f = correct[index];
+		subjectDB.addChoice(item,f,id).then((data)=>{
+			return ;
+			resp.send(data);
+		}).catch((error)=>{
+			console.log('aaaa');
+			resp.send(error);
+		}); 	
+	});
 });
 
 

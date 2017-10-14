@@ -32,11 +32,13 @@ module.exports = {
 		// +epartment+" and  subjectLevel_id = "
 		// +level+" and subjectType_id = "
 		// +type+" and topic_id = "+topic+" ";
+		//由于需要题型和难度的realName,所以在这里做了一个连表查询
 		var sql = "select tbl_exam_subjecttype.realName as tName,tbl_exam_subjectlevel.realName as lName,tbl_exam_subject.* from tbl_exam_subject,tbl_exam_subjectlevel,tbl_exam_subjecttype where tbl_exam_subject.subjectLevel_id = tbl_exam_subjectlevel.id and tbl_exam_subject.subjectType_id = tbl_exam_subjecttype.id and department_id = "
 		+epartment+" and  subjectLevel_id = "
 		+level+" and subjectType_id = "
 		+type+" and topic_id = "
 		+topic+" ";
+		//调用pool里的execute方法,
 		return pool.execute(sql);
 	},
 
@@ -80,15 +82,11 @@ module.exports = {
 		return pool.execute(sql);
 	},
 	//向选项表中添加制定题目的选项内容和正确答案
-	addChoice(content,correct,id){
-		content.forEach(function(item,index){
-			var sql = "insert into tbl_exam_choice values(null,'"+item+"',"+correct[index]+","+id+" )";
+	addChoice(item,correct,id){
+			console.log("sql",item,correct,id);
+			var sql = "insert into tbl_exam_choice values(null,'"+item+"',"+correct+","+id+" );"
 			return pool.execute(sql);
-
-		});
 	},
-
-
 	//删除题目
 	delSubject(id){
 		var sql = "delete from tbl_exam_subject where id = "+id;

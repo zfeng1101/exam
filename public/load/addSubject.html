@@ -208,7 +208,7 @@
 
 
 
-        //添加题目，先将题干等信息获取，然后保存到数据库subject表中
+    //添加题目，先将题干等信息获取，然后保存到数据库subject表中
         //给保存添加事件       
         $(".saveContinue").on('click',function(){
         //0.获取下拉链表中的属性的id值
@@ -216,24 +216,25 @@
             var level = $("select[name='level'] option:selected").val();
             var epartment = $("select[name='department'] option:selected").val();
             var topic = $("select[name='topic'] option:selected").val();
-            // console.log(typeof(Number(epartment)));
-            // console.log(Number(epartment));
-            // console.log(Number(level));
-            // console.log(Number(type));
-            // console.log(Number(topic));
+            
          //1.获取textarea中的值
             //stem 为题干信息
             var stem = $("textarea[name='stem']").val();
             // console.log(stem);
             //选项内容 
             var content = new Array();
-            var content = $("textarea[name='choiceContent']").map(function(index,item){
-                return item.value;
-            }).toArray().toString();
+            if(type ==1 || type==2){
+                var content = $("textarea[name='choiceContent']").map(function(index,item){
+                    return item.value;
+                }).toArray().toString();
+            }else if(type ==3){
+                content = $("textarea[name='answer']").val();
+                console.log(content);
+            }
             console.log(content);
-            //也是subject表中answer的数据
             var answer = content;
-            // console.log(answer);
+            console.log(answer);
+            //也是subject表中answer的数据
             //analtsis 为题目分析
             var analysis = $("textarea[name='analysis']").val();
             // console.log(analysis);
@@ -276,30 +277,46 @@
                 "type":type,
                 "topic":topic,
             };
+
+
             $.ajax("epartment/addSubject",{
                 method:"POST",
                 data:subject,
                 success:function(data){
-                    $.getJSON('epartment/findId',function(data){
-                        console.log(data[0].id);
-                        $.ajax("epartment/addChoice",{
-                            method:"POST",
-                            data:{
-                                "content":content,
-                                "correct":correct,
-                                "id":data[0].id,
-                            },
-                            sucess:function(data){
-                                $('.right').load("./load/addSubject.html");
-                                alert("成功");
-                            }
+                    console.log("______",data);
+                    // console.log("++++++++",data.insertId);
+                    if(type == 1 || type == 2){
+                        $.getJSON('epartment/findId',function(data){
+                            console.log(data[0].id);
+                            $.ajax("epartment/addChoice",{
+                                method:"POST",
+                                data:{
+                                    "content":content,
+                                    "correct":correct,
+                                    "id":data[0].id,
+                                },
+                                sucess:function(data){
+                                    $("textarea").val("");
+                                    // $("")
+                                    // alert("成功");
+                                }
 
+                            });
                         });
-                    });
+                    }else{
+
+                    }
 
                 }
             });
         });
+
+
+    //保存并关闭
+    $('.saveClose').off('click');
+    $('.saveClose').on('click',function(){
+        $('.right').load("../load/showSubject.html");
+    });
 
 
             

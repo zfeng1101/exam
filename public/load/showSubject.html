@@ -224,20 +224,23 @@
       event.preventDefault();
 
       var arr = new Array();
-      //遍历所有选中的a，将它的id值存放在数组中，
+      //遍历所有的a，将选中的a它的id值存放在数组中，
       arr = $("table").find("a").filter(":visible").map(function(index,item){
+        //判断是否选中
         if($(item).hasClass("active3")){
           // console.log(item.id);
           return item.id;
         }
       }).toArray();
         // console.log(arr);
+        //然后按照顺序将值一次传给下面四个属性，
+        //由于我的类型，难易程度，方向，知识点是固定的，所以在这里直接拿到并赋值
         var type = arr[0];
         var level = arr[1];
         var epartment = arr[2];
         var topic = arr[3];
         // console.log(type,level,epartment,topic);
-        //获取到相应的id值，发送请求，查找subject表中相应的信息
+        //获取到相应的id值，向后台发送ajax请求，查找subject表中相应的信息
       $.ajax("epartment/findSubject",{
           method:"POST",
           data:{
@@ -247,7 +250,8 @@
             "topic":topic
           },
           success:function(data){
-            //成功后调用show函数
+            console.log("++++",data);
+            //成功后调用show函数,show函数是用来显示题目
             show(data);
             
           }
@@ -271,9 +275,10 @@
           //克隆
           var showSub = $(".Catalog_rightnei:eq(0)").clone();
           showSub.removeAttr("hidden");
-          //
+          //追加在Catalog_right div中
           $(".Catalog_right").append(showSub);
         //需连表查询才能有item.tbl_exam_subjecttype.realName 由于连表查询出结果会存在两个列名都为realName,所以在写SQL语句的时候就将其重命名了，重命名为tName，lName等
+        //显示提示语句
           showSub.find(".Catalogtitwo").html("题号:"+item.id+"&nbsp;&nbsp;题型:"+item.tName+"&nbsp;&nbsp;难度:"+item.lName+"&nbsp;&nbsp;上传人:"+item.user+"&nbsp;&nbsp;来源:"+null+"&nbsp;&nbsp;上传时间:"+item.uploadTime+"&nbsp;&nbsp;组卷次数:<em>0</em>");
 
 
@@ -283,7 +288,7 @@
           // $(".Catalogcontentup").append(sub);
 
 
-        //存放题目id
+        //存放题目id,病让他隐藏
           var sid = $("<span>"+item.id+"</span>");
           showSub.find(".subjectId").append(sid);
 
@@ -306,13 +311,13 @@
             analysi.css("color","blue");
             showSub.find(".Catalogcontentcenter").append(analysi);
           
-        //显示单选或多选的选项值
+        //显示单选或多选的选项值和正确答案
+        //通过判断tName的值，当类型为单选题或多选题时
         //tName为tbl_exam_subjectType表中的realName 列
-        //判断tName的值，当类型为单选题或多选题时
           if(item.tName=="单选题" || item.tName=="复选题"){
               //获取当前题目的id值
               var content = item.id;  
-              //显示选项
+            //显示选项
               //通过这个题目的id，在tbl_exam_choice 中找到相应题目的选项
               //发送请求
               $.ajax("epartment/findContent",{
@@ -322,20 +327,21 @@
                   },
                   success:function(data){
                     //返回的数据是data,然后遍历它
+                    //因为一个题目对应四个选项，
                     // console.log("+-+_=+_",data);
                     data.forEach(function(item,index){
                       //item对应一个选项的内容(包括id,Content，correct，subject_id)
-                      // console.log(item);
+                      console.log(item);
                       //当correct=1时表示相对应content值为正确值/答案
                       //由于correct是一个buffer，所以我们需要获取他的data属性里的值。
                       // console.log(item.correct);
                       // console.log("-------",item.correct.data[0]);
                       // console.log("-------",item.content);
 
-                    //formCharCode()可接受一个制定的Unicode值，然后返回一个字符串，是String的静态方法
+                //然后把选项追加在用来显示题目的那个div中
+                    //formCharCode()可接受一个的Unicode值，然后返回一个字符串，是String的静态方法
                       //A 的ASCII码值为65，所以用相应的选项的index值加上65，再转换为相应的字符ABCD
                       //index 是每个选项对应的索引值
-                      //然后把选项追加在用来显示题目的那个div中
                       var content = $("<p>"+String.fromCharCode(index+65)+".&nbsp;"+item.content+"</p>");
                       showSub.find(".Catalogcontentup").append(content);
                       content.css("margin-left","30px");
@@ -420,7 +426,7 @@
                   },
                   success:function(data){
                       alert("删除成功");
-                      $('.Catalog_rightnei').remove();
+                      $('.Catalog_rightnei').hide();
 
                   }
               });
