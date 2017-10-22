@@ -295,16 +295,16 @@
                                     "correct":correct,
                                     "id":data[0].id,
                                 },
-                                sucess:function(data){
-                                    $("textarea").val("");
-                                    // $("")
-                                    // alert("成功");
+                                success:function(data){
                                 }
 
                             });
                         });
+                            alert("成功");
+                            $('.right').load("./load/addSubject.html");
                     }else{
-
+                        alert("成功");
+                        $('.right').load("./load/addSubject.html");
                     }
 
                 }

@@ -36,7 +36,7 @@
                           <a href="#" class="ch">审核通过</a>
                           <a href="#" class="ch">审核不通过</a>
                           <a href="#" class="ch">删除题目</a>
-                          <a href="#" class="ch">加入试卷</a>
+                          <a href="#" class="ch" hidden>加入试卷</a>
                         </div>
                         <div class="subjectId" hidden></div>
                     </div>
@@ -250,7 +250,7 @@
             "topic":topic
           },
           success:function(data){
-            console.log("++++",data);
+            // console.log("++++",data);
             //成功后调用show函数,show函数是用来显示题目
             show(data);
             
@@ -331,7 +331,7 @@
                     // console.log("+-+_=+_",data);
                     data.forEach(function(item,index){
                       //item对应一个选项的内容(包括id,Content，correct，subject_id)
-                      console.log(item);
+                      // console.log(item);
                       //当correct=1时表示相对应content值为正确值/答案
                       //由于correct是一个buffer，所以我们需要获取他的data属性里的值。
                       // console.log(item.correct);
@@ -373,11 +373,12 @@
       
         //审查题目
           $(".Catalogcontentdown").on('click','a',function(event){
+            var vm = $(this);
             //获取当前点击的内容
-              var check = $(this).html();
+              var check = vm.html();
               console.log(check);
             //获取当前题目的id
-              var id = $(this).parent().next().text();
+              var id = vm.parent().next().text();
               console.log(id);
             //进行判断，发送请求
               switch(check){
@@ -391,8 +392,10 @@
 
                         success:function(data){
                           // // 点击审查后，只显示加入试卷,当下一次加载数据时，审查通过的就只显示加入试卷，审查不通过的依旧显示那三个a标签
-                            $(".ch").hide();
-                            $(".ch:contains('加入试卷')").show();
+                            vm.hide();
+                            vm.siblings().hide();
+                            vm.siblings().eq(2).show();
+                            alert("通过");
                         }
                       });
                     break;
@@ -408,29 +411,42 @@
                         }
                       });
                     break;
+
+                  case "删除题目":
+                    $.ajax("epartment/delSubject",{
+                      method:"POST",
+                      data:{
+                          "id":id
+                      },
+                      success:function(data){
+                          alert("删除成功");
+                          $('.right').load("./load/showSubject.html");
+                      }
+                    });
+
               }
               event.preventDefault();
           });
 
 
         //删除题目
-          $('.Catalogcontentdown').on('click','a',function(event){
-            //获取当前题目的id值
-              var id = $(this).parent().next().text();
-              console.log(id);
-            //通过id值向后台发送请求，删除数据
-              $.ajax("epartment/delSubject",{
-                  method:"POST",
-                  data:{
-                      "id":id
-                  },
-                  success:function(data){
-                      alert("删除成功");
-                      $('.Catalog_rightnei').hide();
+          // $('.Catalogcontentdown').on('click','a',function(event){
+          //   //获取当前题目的id值
+          //     var id = $(this).parent().next().text();
+          //     console.log(id);
+          //   //通过id值向后台发送请求，删除数据
+          //     $.ajax("epartment/delSubject",{
+          //         method:"POST",
+          //         data:{
+          //             "id":id
+          //         },
+          //         success:function(data){
+          //             alert("删除成功");
+          //             $('.Catalog_rightnei').hide();
 
-                  }
-              });
-          });
+          //         }
+          //     });
+          // });
 
 
 //show函数的结束括号
